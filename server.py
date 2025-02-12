@@ -14,7 +14,7 @@ from pydglab_ws import (
 )
 
 LOG_FILE_PATH = "C:\\trade.txt"
-WS_URL = "ws://192.168.31.189:5678" # ws://{your_ip}:5678
+WS_URL = "ws://192.168.31.189:5678"  # ws://{your_ip}:5678
 
 
 def print_qrcode(data: str):
@@ -48,6 +48,10 @@ async def handle_position_data(data):
 
 
 async def monitor_trading_log(file_path):
+    if not os.path.exists(file_path):
+        async with aiofiles.open(file_path, "w") as f:
+            await f.write("")
+
     last_size = os.path.getsize(file_path)
 
     while True:
