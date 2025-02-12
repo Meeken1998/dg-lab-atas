@@ -1,0 +1,48 @@
+# .gitignore
+
+# C# 项目
+## 生成的文件
+bin/
+obj/
+
+## Visual Studio
+.vs/
+.idea/
+.vscode/
+
+## Rider
+.idea/
+
+## NuGet
+*.nupkg
+.nuget/
+
+## ASP.NET
+wwwroot/
+
+## Windows Installer
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Python 项目
+## 虚拟环境
+venv/
+env/
+*.egg-info/
+
+## Python 编译文件
+__pycache__/
+*.pyc
+*.pyo
+
+## Jupyter Notebook
+.ipynb_checkpoints
+
+## PyCharm
+.idea/
+
+# 通用
+.DS_Store
+Thumbs.db
