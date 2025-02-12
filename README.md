@@ -75,3 +75,4 @@ Enjoy~
 ## 关于
 
 作者：[猫有点大@bilibili](https://space.bilibili.com/39903717)
+致谢：[PyDGLab-WS](https://github.com/Ljzd-PRO/PyDGLab-WS)
