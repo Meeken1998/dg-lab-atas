@@ -14,7 +14,7 @@ const DEFAULT_SETTINGS: TSettings = {
   stopLoss: {
     trigger: 2,
     value: 50,
-    type: 'solid',
+    type: 'fixed',
   },
 };
 
@@ -28,14 +28,14 @@ const App: React.FC = () => {
 
   return (
     <Theme appearance="dark" accentColor="yellow">
-      <main className="app !flex h-screen w-screen justify-center text-sm text-[#ffe99d] select-none">
+      <main className="app !flex h-screen w-screen justify-center bg-gradient-to-b from-[#111] to-[rgb(30,41,59)] text-sm text-[#ffe99d] select-none">
         <div className="flex flex-col w-full p-6 max-w-96 rounded-xl">
           <div className="flex justify-between gap-6">
             <img src="dg-lab.png" className="h-16 cursor-pointer shrink-0" draggable={false} onClick={() => setTab(tab === 'info' ? 'settings' : 'info')} />
             <div className="flex flex-col flex-1 gap-1 py-1">
-              <div className="text-base font-bold">扛单电击风控已开启！</div>
+              <div className="text-base font-bold">风控已开启，扛单会被电！</div>
 
-              <div className="flex gap-6">
+              <div className="flex gap-3">
                 <div className="flex items-center gap-1">
                   <svg width="24" height="24" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
@@ -45,7 +45,7 @@ const App: React.FC = () => {
                       clip-rule="evenodd"
                     ></path>
                   </svg>
-                  <div className="text-3xl font-bold">90</div>
+                  <div className="text-3xl font-bold w-14">90</div>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -66,10 +66,14 @@ const App: React.FC = () => {
           <div className="my-4 h-[1px] w-full bg-[#333]"></div>
 
           {tab === 'info' && (
-            <div className="flex-1 leading-6 text-white">
-              <div>扛单：超过 1000 刀时，强度=50</div>
-              <div>连损：2 笔又浮亏时，强度=亏损额×0.5</div>
-              <div>停止惩罚：不再浮亏</div>
+            <div className="flex-1 leading-6">
+              <div>
+                扛单：亏损超 {settings.pnlLoss.trigger} 刀时，电流强度={settings.pnlLoss.type === 'fixed' ? settings.pnlLoss.value : '亏损额×' + settings.pnlLoss.value}
+              </div>
+              <div>
+                连损：连损 {settings.stopLoss.trigger} 笔后浮亏，电流强度={settings.stopLoss.type === 'fixed' ? settings.stopLoss.value : '亏损额×' + settings.stopLoss.value}
+              </div>
+              <div>停止惩罚：空仓或不再浮亏</div>
             </div>
           )}
 
@@ -85,8 +89,8 @@ const App: React.FC = () => {
               <StrengthSettings unit="刀" value={settings.pnlLoss} onChange={(v) => handleChange({ pnlLoss: v })} />
 
               <div className="flex items-center gap-2 mt-4">
-              <Checkbox checked={settings.stopLossEnabled} onCheckedChange={(v) => handleChange({ stopLossEnabled: v as boolean })} />
-              <div className="flex flex-wrap items-center gap-1">
+                <Checkbox checked={settings.stopLossEnabled} onCheckedChange={(v) => handleChange({ stopLossEnabled: v as boolean })} />
+                <div className="flex flex-wrap items-center gap-1">
                   <span>连损检测</span>
                 </div>
               </div>
@@ -97,7 +101,7 @@ const App: React.FC = () => {
                 <span>停止惩罚</span>
               </div>
 
-              <div className="mt-1 flex items-center gap-2 text-xs text-[#ccc]">不再浮亏时，强度设为 0（暂不支持修改）</div>
+              <div className="mt-1 flex items-center gap-2 text-xs text-[#ccc]">空仓或不再浮亏时，强度设为 0（暂不支持修改）</div>
 
               <div className="flex justify-end mt-4">
                 <Button>保存</Button>

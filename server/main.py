@@ -87,6 +87,23 @@ async def monitor_trading_log(file_path):
                         await handle_position_data(data)
             last_size = current_size
         await asyncio.sleep(1)
+        
+async def gui_websocket_server():
+    async def handle_gui_connection(websocket, path):
+        print(f"GUI client connected: {websocket.remote_address}")
+        try:
+            while True:
+                message = await websocket.recv()
+                print(f"Received from GUI: {message}")
+                # Handle incoming messages from the GUI
+                response = "Message received from GUI"
+                await websocket.send(response)
+        except websockets.exceptions.ConnectionClosed:
+            print("GUI client disconnected")
+
+    server = await websockets.serve(handle_gui_connection, "0.0.0.0", 8769)
+    print("GUI WebSocket server started on ws://0.0.0.0:5679")
+    await server.wait_closed()
 
 
 async def main():
@@ -101,6 +118,10 @@ async def main():
 
         # Monitor trading log file
         asyncio.create_task(monitor_trading_log(CONFIG["LOG_FILE_PATH"]))
+        
+        # start gui websocket server
+          # Start GUI WebSocket server
+        asyncio.create_task(gui_websocket_server())
 
         # Wait for binding
         await client.bind()

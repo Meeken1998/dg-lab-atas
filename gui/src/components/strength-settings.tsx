@@ -20,7 +20,7 @@ export const StrengthSettings: React.FC<Props> = ({ unit, value, onChange }) => 
       <Select.Root size="1" value={value.type} onValueChange={(v) => handleChange({ type: v as TStrength['type'] })}>
         <Select.Trigger />
         <Select.Content>
-          <Select.Item value="solid">固定值</Select.Item>
+          <Select.Item value="fixed">固定值</Select.Item>
           <Select.Item value="multiple">亏损额×</Select.Item>
         </Select.Content>
       </Select.Root>

@@ -1,7 +1,7 @@
 export type TStrength = {
   trigger: number;
   value: number;
-  type: 'solid' | 'multiple';
+  type: 'fixed' | 'multiple';
 };
 
 export type TSettings = {
