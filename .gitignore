@@ -36,3 +36,4 @@ Thumbs.db
 
 server/build
 server/dist
+server/*.spec
