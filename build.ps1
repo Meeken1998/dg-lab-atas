@@ -13,4 +13,13 @@ python -m venv venv
 pip install -r requirements.txt
 pyinstaller --onefile --icon=icon.ico main.py
 Copy-Item .\dist\main.exe ..\dist\DgLabAtas.exe
+
+pyinstaller --onefile --icon=icon.ico gui.py
+Copy-Item .\dist\gui.exe ..\dist\WebPage.exe
+Set-Location ..\
+
+# build client gui
+Set-Location .\gui
+npm run build
+
 Set-Location ..\

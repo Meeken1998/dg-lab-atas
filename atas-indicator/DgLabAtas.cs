@@ -22,6 +22,7 @@ public class DgLabIndicator : Indicator
             time = formattedTime,
             security = position.SecurityId,
             volume = position.Volume,
+            close = !position.IsInPosition,
         };
 
         var jsonMessage = JsonSerializer.Serialize(message);

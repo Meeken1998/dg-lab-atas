@@ -1,0 +1,15 @@
+{
+    "pnlLossEnabled": true,
+    "pnlLoss": {
+        "trigger": 0,
+        "value": 1,
+        "type": "multiple"
+    },
+    "stopLossEnabled": true,
+    "stopLoss": {
+        "trigger": 2,
+        "value": 50,
+        "type": "fixed"
+    },
+    "stopLossRestMinutes": 1
+}

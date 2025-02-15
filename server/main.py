@@ -12,9 +12,14 @@ from pydglab_ws import (
     RetCode,
     DGLabWSServer,
 )
-
 import psutil
 import socket
+import websockets
+from settings import PUNISHMENT_SETTINGS, set_settings
+import time
+import datetime
+import http.server
+import socketserver
 
 
 def get_lan_ip():
@@ -30,7 +35,17 @@ CONFIG = {
     "WS_URL": f"ws://{get_lan_ip()}:5678",  # ws://{your_ip}:5678
 }
 
-print(CONFIG)
+P_SETTINGS = PUNISHMENT_SETTINGS.copy()
+P_LATEST_PNL = 0
+P_STOP_LOSS_COUNT = 0
+P_NEXT_TIMESTAMP_ALLOWED_TO_TRADE = 0
+P_IS_UNDER_PUNISHMENT = False
+P_PUNISHMENT_COUNT = 0
+
+current_websocket = None
+
+print(f"Server 配置：{CONFIG}")
+print(f"当前惩罚设置: {P_SETTINGS}")
 
 
 def print_qrcode(data: str):
@@ -44,23 +59,63 @@ def print_qrcode(data: str):
 
 
 async def handle_position_data(data):
+    global P_LATEST_PNL
+    global P_STOP_LOSS_COUNT
+    global P_NEXT_TIMESTAMP_ALLOWED_TO_TRADE
+    global P_IS_UNDER_PUNISHMENT
+    global P_PUNISHMENT_COUNT
+
     if not client:
         return
-    volume, pnl, security = data.get("volume"), data.get("data"), data.get("security")
+    pnl, close = data.get("data"), data.get("close")
+
+    # monitor trade info
+    if close:
+        if P_LATEST_PNL < 0:
+            P_STOP_LOSS_COUNT += 1
+        else:
+            P_STOP_LOSS_COUNT = 0
+
+    if P_STOP_LOSS_COUNT == P_SETTINGS["stopLoss"]["trigger"]:
+        P_NEXT_TIMESTAMP_ALLOWED_TO_TRADE = time.time(
+        ) + P_SETTINGS["stopLossRestMinutes"] * 60
+
+    P_LATEST_PNL = pnl
 
     # Apply strength based on PNL
-    strength = abs(volume) * 0 if pnl >= 0 else abs(pnl)
+    strength = 0
 
-    # Increase strength if security is NQ
-    if "NQ" in security:
-        strength *= 2
+    if P_SETTINGS["stopLossEnabled"] == True and P_NEXT_TIMESTAMP_ALLOWED_TO_TRADE > time.time() and pnl < 0:
+        strength += P_SETTINGS["stopLoss"]["value"] if P_SETTINGS["stopLoss"][
+            "type"] == "fixed" else P_SETTINGS["stopLoss"]["value"] * abs(pnl)
+        print(
+            f"🔒 触发连损风控，已连损 {P_STOP_LOSS_COUNT} 次，解除时间：{datetime.datetime.fromtimestamp(P_NEXT_TIMESTAMP_ALLOWED_TO_TRADE)}")
+    elif P_SETTINGS["pnlLossEnabled"] == True and pnl < P_SETTINGS["pnlLoss"]["value"] * -1:
+        strength += P_SETTINGS["pnlLoss"]["value"] if P_SETTINGS["pnlLoss"][
+            "type"] == "fixed" else P_SETTINGS["pnlLoss"]["value"] * abs(pnl)
+        print(f"😡 触发扛单风控，已连损 {P_STOP_LOSS_COUNT} 次，当前 PnL：{pnl}")
 
-    strength = round(strength * 0.5)
-    print(f"⚡ Strength: {strength}")
+    strength = round(strength)
+
+    if strength > 0:
+        if P_IS_UNDER_PUNISHMENT == False:
+            P_IS_UNDER_PUNISHMENT = True
+            P_PUNISHMENT_COUNT += 1
+    else:
+        P_IS_UNDER_PUNISHMENT = False
+
+    print(f"⚡ 当前电击强度：{strength}")
 
     # Send pulses to the client
     await client.add_pulses(Channel.A, *(PULSE_DATA["信号灯"] * 5))
     await client.set_strength(Channel.A, StrengthOperationType.SET_TO, strength)
+    if current_websocket:
+        await current_websocket.send(json.dumps({
+            **data,
+            "type": "trade",
+            "data": strength,
+            "punishmentCount": P_PUNISHMENT_COUNT,
+        }))
 
 
 async def monitor_trading_log(file_path):
@@ -83,26 +138,40 @@ async def monitor_trading_log(file_path):
                     if data.get("type") == "position" and isinstance(
                         data.get("data"), (int, float)
                     ):
-                        print(data)
+                        print(f"持仓数据：{data}")
                         await handle_position_data(data)
             last_size = current_size
         await asyncio.sleep(1)
-        
+
+
 async def gui_websocket_server():
-    async def handle_gui_connection(websocket, path):
-        print(f"GUI client connected: {websocket.remote_address}")
+    async def handle_gui_connection(websocket):
+        global current_websocket
+        current_websocket = websocket
         try:
             while True:
                 message = await websocket.recv()
-                print(f"Received from GUI: {message}")
-                # Handle incoming messages from the GUI
-                response = "Message received from GUI"
-                await websocket.send(response)
-        except websockets.exceptions.ConnectionClosed:
-            print("GUI client disconnected")
+                data = json.loads(message)
+                if data.get("type") == "get_settings":
+                    print(f"当前惩罚设置: {P_SETTINGS}")
+                    await websocket.send(json.dumps({
+                        "type": "settings",
+                        "data": P_SETTINGS,
+                    }))
+                if data.get("type") == "set_settings":
+                    print(f"更新惩罚设置: {data.get('data')}")
+                    set_settings(data.get("data"))
+                    P_SETTINGS.update(data.get("data"))
+                    await websocket.send(json.dumps({
+                        "type": "settings",
+                        "data": P_SETTINGS,
+                    }))
 
-    server = await websockets.serve(handle_gui_connection, "0.0.0.0", 8769)
-    print("GUI WebSocket server started on ws://0.0.0.0:5679")
+        except websockets.exceptions.ConnectionClosed:
+            print("网页 WebSocket 服务已断开")
+
+    server = await websockets.serve(handle_gui_connection, "0.0.0.0", 5679)
+    print("网页 WebSocket 服务已启动： ws://0.0.0.0:5679")
     await server.wait_closed()
 
 
@@ -111,40 +180,39 @@ async def main():
         global client
         client = server.new_local_client()
 
-        # Print QR code for app connection
-        url = client.get_qrcode(CONFIG["WS_URL"])
-        print("Please scan the QR code with DG-Lab App to connect")
-        print_qrcode(url)
-
         # Monitor trading log file
         asyncio.create_task(monitor_trading_log(CONFIG["LOG_FILE_PATH"]))
-        
-        # start gui websocket server
-          # Start GUI WebSocket server
+
+        # Start GUI WebSocket server
         asyncio.create_task(gui_websocket_server())
+
+        # Print QR code for app connection
+        url = client.get_qrcode(CONFIG["WS_URL"])
+        print("请扫描二维码连接到 DG-LAB App")
+        print_qrcode(url)
 
         # Wait for binding
         await client.bind()
-        print(f"Successfully bound to App {client.target_id}")
+        print(f"成功绑定客户端 {client.target_id}")
 
         async for data in client.data_generator():
 
             # Handle strength data updates
             if isinstance(data, StrengthData):
-                print(f"Received strength data update from App: {data}")
+                print(f"App 强度信息: {data}")
                 last_strength = data
 
             # Handle disconnection or heartbeat
             elif data == RetCode.CLIENT_DISCONNECTED:
                 print(
-                    "App disconnected. You can try scanning the QR code to reconnect."
+                    "App 断连，请重启软件"
                 )
                 client.add_pulses()
                 await client.rebind()
-                print("Successfully re-bound")
+                print("重新绑定成功")
 
             else:
-                print(f"Received unhandled data: {data}")
+                print(f"不支持的信息: {data}")
 
 
 if __name__ == "__main__":

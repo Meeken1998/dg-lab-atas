@@ -1,7 +1,7 @@
-import { Button, Checkbox, Theme } from '@radix-ui/themes';
-import { useState } from 'react';
+import { Button, Checkbox, TextField, Theme } from '@radix-ui/themes';
+import { useEffect, useRef, useState } from 'react';
 import { StrengthSettings } from './components/strength-settings';
-import { TSettings } from './types';
+import { TGetSettingsMessage, TResponse, TSetSettingsMessage, TSettings, TTradeResponse } from './types';
 
 const DEFAULT_SETTINGS: TSettings = {
   pnlLossEnabled: true,
@@ -16,15 +16,69 @@ const DEFAULT_SETTINGS: TSettings = {
     value: 50,
     type: 'fixed',
   },
+  stopLossRestMinutes: 5,
 };
 
 const App: React.FC = () => {
   const [tab, setTab] = useState<'info' | 'settings'>('info');
   const [settings, setSettings] = useState<TSettings>(DEFAULT_SETTINGS);
+  const wsRef = useRef<WebSocket | null>(null);
+  const [connected, setConnected] = useState(false);
+  const [tradeInfo, setTradeInfo] = useState<TTradeResponse | null>(null);
+  const [animate, setAnimate] = useState<'+' | '-' | null>(null);
+  const timerRef = useRef<number>(undefined);
+  const lastStrengthRef = useRef<number>(0);
 
   const handleChange = (v: Partial<TSettings>) => {
     setSettings((prev) => ({ ...prev, ...v }));
   };
+
+  const handleSubmitSettings = () => {
+    const message: TSetSettingsMessage = { type: 'set_settings', data: settings };
+    wsRef.current?.send(JSON.stringify(message));
+  };
+
+  const showAnimate = (type: '+' | '-') => {
+    setAnimate(type);
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => setAnimate(null), 500);
+  };
+
+  useEffect(() => {
+    const ws = new WebSocket('http://localhost:5679/ws');
+
+    ws.onopen = () => {
+      console.log('WebSocket connected');
+      wsRef.current = ws;
+      const message: TGetSettingsMessage = { type: 'get_settings' };
+      ws.send(JSON.stringify(message));
+    };
+
+    ws.onmessage = (e) => {
+      try {
+        const res = JSON.parse(e.data) as TResponse;
+        console.log(res);
+        if (res.type === 'settings') {
+          setSettings(res.data);
+          setConnected(true);
+        } else if (res.type === 'trade') {
+          if (lastStrengthRef.current < res.data) {
+            showAnimate('+');
+          } else {
+            showAnimate('-');
+          }
+          lastStrengthRef.current = res.data;
+          setTradeInfo(res);
+        }
+      } catch (error) {
+        console.error('Error parsing WebSocket message:', error);
+      }
+    };
+
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+  }, []);
 
   return (
     <Theme appearance="dark" accentColor="yellow">
@@ -33,7 +87,7 @@ const App: React.FC = () => {
           <div className="flex justify-between gap-6">
             <img src="dg-lab.png" className="h-16 cursor-pointer shrink-0" draggable={false} onClick={() => setTab(tab === 'info' ? 'settings' : 'info')} />
             <div className="flex flex-col flex-1 gap-1 py-1">
-              <div className="text-base font-bold">风控已开启，扛单会被电！</div>
+              <div className="text-base font-bold">{connected ? '风控已开启，扛单会被电！' : '等待连接中...'}</div>
 
               <div className="flex gap-3">
                 <div className="flex items-center gap-1">
@@ -45,7 +99,31 @@ const App: React.FC = () => {
                       clip-rule="evenodd"
                     ></path>
                   </svg>
-                  <div className="text-3xl font-bold w-14">90</div>
+                  <div className="flex items-center gap-2 text-3xl font-bold w-14">
+                    <span>{Math.round(tradeInfo?.data ?? 0)}</span>
+
+                    {animate === '+' && (
+                      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M7.5 1C7.66148 1 7.81301 1.07798 7.90687 1.20938L12.9069 8.20938C13.0157 8.36179 13.0303 8.56226 12.9446 8.72879C12.8589 8.89533 12.6873 9 12.5 9H10V11.5C10 11.7761 9.77614 12 9.5 12H5.5C5.22386 12 5 11.7761 5 11.5V9H2.5C2.31271 9 2.14112 8.89533 2.05542 8.72879C1.96972 8.56226 1.98427 8.36179 2.09314 8.20938L7.09314 1.20938C7.18699 1.07798 7.33853 1 7.5 1ZM3.4716 8H5.5C5.77614 8 6 8.22386 6 8.5V11H9V8.5C9 8.22386 9.22386 8 9.5 8H11.5284L7.5 2.36023L3.4716 8Z"
+                          fill="#f2385a"
+                          fill-rule="evenodd"
+                          clip-rule="evenodd"
+                        ></path>
+                      </svg>
+                    )}
+
+                    {animate === '-' && (
+                      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M5 3.5C5 3.22386 5.22386 3 5.5 3H9.5C9.77614 3 10 3.22386 10 3.5V6H12.5C12.6873 6 12.8589 6.10467 12.9446 6.27121C13.0303 6.43774 13.0157 6.63821 12.9069 6.79062L7.90687 13.7906C7.81301 13.922 7.66148 14 7.5 14C7.33853 14 7.18699 13.922 7.09314 13.7906L2.09314 6.79062C1.98427 6.63821 1.96972 6.43774 2.05542 6.27121C2.14112 6.10467 2.31271 6 2.5 6H5V3.5ZM6 4V6.5C6 6.77614 5.77614 7 5.5 7H3.4716L7.5 12.6398L11.5284 7H9.5C9.22386 7 9 6.77614 9 6.5V4H6Z"
+                          fill="#0b8542"
+                          fill-rule="evenodd"
+                          clip-rule="evenodd"
+                        ></path>
+                      </svg>
+                    )}
+                  </div>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -57,7 +135,7 @@ const App: React.FC = () => {
                       clip-rule="evenodd"
                     ></path>
                   </svg>
-                  <div className="text-3xl font-bold">14 次</div>
+                  <div className="text-3xl font-bold">{Math.floor(tradeInfo?.punishmentCount ?? 0)} 次</div>
                 </div>
               </div>
             </div>
@@ -96,6 +174,11 @@ const App: React.FC = () => {
               </div>
 
               <StrengthSettings unit="笔" value={settings.stopLoss} onChange={(v) => handleChange({ stopLoss: v })} />
+              <div className="mt-2 flex items-center gap-2 text-xs text-[#ccc]">
+                <span>强制停手时间</span>
+                <TextField.Root size="1" type="number" className="w-16" value={settings.stopLossRestMinutes} onChange={(e) => handleChange({ stopLossRestMinutes: Number(e.target.value) })} />
+                <span>分钟</span>
+              </div>
 
               <div className="flex flex-wrap items-center gap-1 mt-4">
                 <span>停止惩罚</span>
@@ -104,7 +187,7 @@ const App: React.FC = () => {
               <div className="mt-1 flex items-center gap-2 text-xs text-[#ccc]">空仓或不再浮亏时，强度设为 0（暂不支持修改）</div>
 
               <div className="flex justify-end mt-4">
-                <Button>保存</Button>
+                <Button onClick={handleSubmitSettings}>保存</Button>
               </div>
             </div>
           )}
