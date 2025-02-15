@@ -1,10 +1,12 @@
-# ⚡ DG-LAB ATAS 风控插件
-
-
 <div align="center">
   <img src="https://github.com/Meeken1998/atas-dg-lab-plugin/blob/master/dg-lab-atas.png" width="396" height="406" alt="sample">
+  <div></div>
+  <div>
+    <i><b>「让“亏麻了”从玩笑变成现实。」</b></i>
+  </div>
 </div>
 
+# ⚡ DG-LAB ATAS 风控插件
 
 ## 简介
 
