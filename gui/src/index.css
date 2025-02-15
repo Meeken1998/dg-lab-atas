@@ -35,3 +35,7 @@
 
   --gray-12: #fff;
 }
+
+.rt-SelectTrigger {
+  @apply w-full;
+}

@@ -1,7 +1,7 @@
-import { Button, Checkbox, TextField, Theme } from '@radix-ui/themes';
-import { useEffect, useRef, useState } from 'react';
+import { Button, Checkbox, Select, TextField, Theme } from '@radix-ui/themes';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { StrengthSettings } from './components/strength-settings';
-import { TGetSettingsMessage, TResponse, TSetSettingsMessage, TSettings, TTradeResponse } from './types';
+import { TGetSettingsMessage, TResponse, TSetSettingsMessage, TSettings, TTradeResponse, WAVEFORMS } from './types';
 
 const DEFAULT_SETTINGS: TSettings = {
   pnlLossEnabled: true,
@@ -17,17 +17,48 @@ const DEFAULT_SETTINGS: TSettings = {
     type: 'fixed',
   },
   stopLossRestMinutes: 5,
+  waveform: '信号灯',
+  pluginTitle: '风控已开启，扛单会被电！',
+  showSummary: true,
+  enableStopLossCountdown: true,
 };
 
 const App: React.FC = () => {
   const [tab, setTab] = useState<'info' | 'settings'>('info');
   const [settings, setSettings] = useState<TSettings>(DEFAULT_SETTINGS);
-  const wsRef = useRef<WebSocket | null>(null);
+  const wsRef = useRef<WebSocket>(null);
   const [connected, setConnected] = useState(false);
   const [tradeInfo, setTradeInfo] = useState<TTradeResponse | null>(null);
   const [animate, setAnimate] = useState<'+' | '-' | null>(null);
   const timerRef = useRef<number>(undefined);
   const lastStrengthRef = useRef<number>(0);
+  const [countdown, setCountdown] = useState<string | null>(null);
+
+  const countdownFn = useCallback(() => {
+    if (!tradeInfo?.nextTimestampAllowedToTrade || !settings.enableStopLossCountdown) return;
+    const now = Date.now();
+    const nextTimestampAllowedToTrade = tradeInfo.nextTimestampAllowedToTrade * 1000; // python timestamp
+
+    if (now < nextTimestampAllowedToTrade) {
+      const diffMinutes = Math.floor((nextTimestampAllowedToTrade - now) / 1000 / 60);
+      const diffSeconds = Math.floor(((nextTimestampAllowedToTrade - now) / 1000) % 60);
+      const cd = `${diffMinutes < 10 ? '0' : ''}${diffMinutes}:${diffSeconds < 10 ? '0' : ''}${diffSeconds}`;
+      if (cd !== '00:00') {
+        setCountdown(cd);
+      } else {
+        setCountdown(null);
+      }
+    } else {
+      setCountdown(null);
+    }
+    setTimeout(() => {
+      countdownFn();
+    }, 1000);
+  }, [tradeInfo, settings.enableStopLossCountdown]);
+
+  useEffect(() => {
+    countdownFn();
+  }, [tradeInfo, countdownFn]);
 
   const handleChange = (v: Partial<TSettings>) => {
     setSettings((prev) => ({ ...prev, ...v }));
@@ -41,10 +72,10 @@ const App: React.FC = () => {
   const showAnimate = (type: '+' | '-') => {
     setAnimate(type);
     clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => setAnimate(null), 500);
+    timerRef.current = setTimeout(() => setAnimate(null), 800);
   };
 
-  useEffect(() => {
+  const initWebSocket = () => {
     const ws = new WebSocket('http://localhost:5679/ws');
 
     ws.onopen = () => {
@@ -64,7 +95,7 @@ const App: React.FC = () => {
         } else if (res.type === 'trade') {
           if (lastStrengthRef.current < res.data) {
             showAnimate('+');
-          } else {
+          } else if (lastStrengthRef.current > res.data) {
             showAnimate('-');
           }
           lastStrengthRef.current = res.data;
@@ -76,18 +107,30 @@ const App: React.FC = () => {
     };
 
     ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
+      console.error('WebSocket error, try to reconnect after 3 seconds...', error);
+      // 3 秒后重试连接
+      setTimeout(() => {
+        wsRef.current = new WebSocket('ws://localhost:5679');
+        initWebSocket();
+      }, 3000);
     };
+
+    wsRef.current = ws;
+  };
+
+  useEffect(() => {
+    initWebSocket();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <Theme appearance="dark" accentColor="yellow">
-      <main className="app !flex h-screen w-screen justify-center bg-gradient-to-b from-[#111] to-[rgb(30,41,59)] text-sm text-[#ffe99d] select-none">
+      <main className="app !flex min-h-screen w-screen justify-center bg-gradient-to-b from-[rgb(30,41,59)] to-[#111] text-sm text-[#ffe99d] select-none">
         <div className="flex flex-col w-full p-6 max-w-96 rounded-xl">
           <div className="flex justify-between gap-6">
             <img src="dg-lab.png" className="h-16 cursor-pointer shrink-0" draggable={false} onClick={() => setTab(tab === 'info' ? 'settings' : 'info')} />
             <div className="flex flex-col flex-1 gap-1 py-1">
-              <div className="text-base font-bold">{connected ? '风控已开启，扛单会被电！' : '等待连接中...'}</div>
+              <div className="text-base font-bold">{connected ? settings.pluginTitle || DEFAULT_SETTINGS.pluginTitle : '等待连接中...'}</div>
 
               <div className="flex gap-3">
                 <div className="flex items-center gap-1">
@@ -127,15 +170,32 @@ const App: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <svg width="24" height="24" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M1.90321 7.29677C1.90321 10.341 4.11041 12.4147 6.58893 12.8439C6.87255 12.893 7.06266 13.1627 7.01355 13.4464C6.96444 13.73 6.69471 13.9201 6.41109 13.871C3.49942 13.3668 0.86084 10.9127 0.86084 7.29677C0.860839 5.76009 1.55996 4.55245 2.37639 3.63377C2.96124 2.97568 3.63034 2.44135 4.16846 2.03202L2.53205 2.03202C2.25591 2.03202 2.03205 1.80816 2.03205 1.53202C2.03205 1.25588 2.25591 1.03202 2.53205 1.03202L5.53205 1.03202C5.80819 1.03202 6.03205 1.25588 6.03205 1.53202L6.03205 4.53202C6.03205 4.80816 5.80819 5.03202 5.53205 5.03202C5.25591 5.03202 5.03205 4.80816 5.03205 4.53202L5.03205 2.68645L5.03054 2.68759L5.03045 2.68766L5.03044 2.68767L5.03043 2.68767C4.45896 3.11868 3.76059 3.64538 3.15554 4.3262C2.44102 5.13021 1.90321 6.10154 1.90321 7.29677ZM13.0109 7.70321C13.0109 4.69115 10.8505 2.6296 8.40384 2.17029C8.12093 2.11718 7.93465 1.84479 7.98776 1.56188C8.04087 1.27898 8.31326 1.0927 8.59616 1.14581C11.4704 1.68541 14.0532 4.12605 14.0532 7.70321C14.0532 9.23988 13.3541 10.4475 12.5377 11.3662C11.9528 12.0243 11.2837 12.5586 10.7456 12.968L12.3821 12.968C12.6582 12.968 12.8821 13.1918 12.8821 13.468C12.8821 13.7441 12.6582 13.968 12.3821 13.968L9.38205 13.968C9.10591 13.968 8.88205 13.7441 8.88205 13.468L8.88205 10.468C8.88205 10.1918 9.10591 9.96796 9.38205 9.96796C9.65819 9.96796 9.88205 10.1918 9.88205 10.468L9.88205 12.3135L9.88362 12.3123C10.4551 11.8813 11.1535 11.3546 11.7585 10.6738C12.4731 9.86976 13.0109 8.89844 13.0109 7.70321Z"
-                      fill="currentColor"
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                    ></path>
-                  </svg>
-                  <div className="text-3xl font-bold">{Math.floor(tradeInfo?.punishmentCount ?? 0)} 次</div>
+                  {countdown ? (
+                    <>
+                      <svg width="24" height="24" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M7.49998 0.849976C7.22383 0.849976 6.99998 1.07383 6.99998 1.34998V3.52234C6.99998 3.79848 7.22383 4.02234 7.49998 4.02234C7.77612 4.02234 7.99998 3.79848 7.99998 3.52234V1.8718C10.8862 2.12488 13.15 4.54806 13.15 7.49998C13.15 10.6204 10.6204 13.15 7.49998 13.15C4.37957 13.15 1.84998 10.6204 1.84998 7.49998C1.84998 6.10612 2.35407 4.83128 3.19049 3.8459C3.36919 3.63538 3.34339 3.31985 3.13286 3.14115C2.92234 2.96245 2.60681 2.98825 2.42811 3.19877C1.44405 4.35808 0.849976 5.86029 0.849976 7.49998C0.849976 11.1727 3.82728 14.15 7.49998 14.15C11.1727 14.15 14.15 11.1727 14.15 7.49998C14.15 3.82728 11.1727 0.849976 7.49998 0.849976ZM6.74049 8.08072L4.22363 4.57237C4.15231 4.47295 4.16346 4.33652 4.24998 4.25C4.33649 4.16348 4.47293 4.15233 4.57234 4.22365L8.08069 6.74051C8.56227 7.08599 8.61906 7.78091 8.19998 8.2C7.78089 8.61909 7.08597 8.56229 6.74049 8.08072Z"
+                          fill="currentColor"
+                          fill-rule="evenodd"
+                          clip-rule="evenodd"
+                        ></path>
+                      </svg>
+
+                      <div className="text-3xl font-bold">{countdown}</div>
+                    </>
+                  ) : (
+                    <>
+                      <svg width="24" height="24" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M1.90321 7.29677C1.90321 10.341 4.11041 12.4147 6.58893 12.8439C6.87255 12.893 7.06266 13.1627 7.01355 13.4464C6.96444 13.73 6.69471 13.9201 6.41109 13.871C3.49942 13.3668 0.86084 10.9127 0.86084 7.29677C0.860839 5.76009 1.55996 4.55245 2.37639 3.63377C2.96124 2.97568 3.63034 2.44135 4.16846 2.03202L2.53205 2.03202C2.25591 2.03202 2.03205 1.80816 2.03205 1.53202C2.03205 1.25588 2.25591 1.03202 2.53205 1.03202L5.53205 1.03202C5.80819 1.03202 6.03205 1.25588 6.03205 1.53202L6.03205 4.53202C6.03205 4.80816 5.80819 5.03202 5.53205 5.03202C5.25591 5.03202 5.03205 4.80816 5.03205 4.53202L5.03205 2.68645L5.03054 2.68759L5.03045 2.68766L5.03044 2.68767L5.03043 2.68767C4.45896 3.11868 3.76059 3.64538 3.15554 4.3262C2.44102 5.13021 1.90321 6.10154 1.90321 7.29677ZM13.0109 7.70321C13.0109 4.69115 10.8505 2.6296 8.40384 2.17029C8.12093 2.11718 7.93465 1.84479 7.98776 1.56188C8.04087 1.27898 8.31326 1.0927 8.59616 1.14581C11.4704 1.68541 14.0532 4.12605 14.0532 7.70321C14.0532 9.23988 13.3541 10.4475 12.5377 11.3662C11.9528 12.0243 11.2837 12.5586 10.7456 12.968L12.3821 12.968C12.6582 12.968 12.8821 13.1918 12.8821 13.468C12.8821 13.7441 12.6582 13.968 12.3821 13.968L9.38205 13.968C9.10591 13.968 8.88205 13.7441 8.88205 13.468L8.88205 10.468C8.88205 10.1918 9.10591 9.96796 9.38205 9.96796C9.65819 9.96796 9.88205 10.1918 9.88205 10.468L9.88205 12.3135L9.88362 12.3123C10.4551 11.8813 11.1535 11.3546 11.7585 10.6738C12.4731 9.86976 13.0109 8.89844 13.0109 7.70321Z"
+                          fill="currentColor"
+                          fill-rule="evenodd"
+                          clip-rule="evenodd"
+                        ></path>
+                      </svg>
+                      <div className="text-3xl font-bold">{Math.floor(tradeInfo?.punishmentCount ?? 0)} 次</div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -144,7 +204,7 @@ const App: React.FC = () => {
           <div className="my-4 h-[1px] w-full bg-[#333]"></div>
 
           {tab === 'info' && (
-            <div className="flex-1 leading-6">
+            <div className="flex-1 leading-7">
               <div>
                 扛单：亏损超 {settings.pnlLoss.trigger} 刀时，电流强度={settings.pnlLoss.type === 'fixed' ? settings.pnlLoss.value : '亏损额×' + settings.pnlLoss.value}
               </div>
@@ -152,11 +212,18 @@ const App: React.FC = () => {
                 连损：连损 {settings.stopLoss.trigger} 笔后浮亏，电流强度={settings.stopLoss.type === 'fixed' ? settings.stopLoss.value : '亏损额×' + settings.stopLoss.value}
               </div>
               <div>停止惩罚：空仓或不再浮亏</div>
+              {settings.showSummary && (
+                <div>
+                  已累计被电 {tradeInfo?.punishmentCount ?? 0} 次，当前连损 {tradeInfo?.stopLossCount ?? 0} 笔{countdown ? '，强制停手' : null}
+                </div>
+              )}
             </div>
           )}
 
           {tab === 'settings' && (
             <div className="flex-1 leading-6 text-white">
+              <h2 className="mb-4 text-base font-bold text-[#ffe99d]">风控规则</h2>
+
               <div className="flex items-center gap-2">
                 <Checkbox checked={settings.pnlLossEnabled} onCheckedChange={(v) => handleChange({ pnlLossEnabled: v as boolean })} />
                 <div className="flex flex-wrap items-center gap-1">
@@ -186,7 +253,47 @@ const App: React.FC = () => {
 
               <div className="mt-1 flex items-center gap-2 text-xs text-[#ccc]">空仓或不再浮亏时，强度设为 0（暂不支持修改）</div>
 
-              <div className="flex justify-end mt-4">
+              <h2 className="mt-6 mb-4 text-base font-bold text-[#ffe99d]">互动设置</h2>
+
+              <div className="flex gap-2 mt-4">
+                <span className="shrink-0">插件标题</span>
+                <TextField.Root size="1" className="flex-1" value={settings.pluginTitle} onChange={(e) => handleChange({ pluginTitle: e.target.value })} placeholder={DEFAULT_SETTINGS.pluginTitle} />
+              </div>
+
+              <div className="flex gap-2 mt-4">
+                <span className="shrink-0">电击波形</span>
+                <div className="flex-1">
+                  <Select.Root size="1" value={settings.waveform} onValueChange={(v) => handleChange({ waveform: v })}>
+                    <Select.Trigger />
+                    <Select.Content>
+                      {WAVEFORMS.map((v) => {
+                        return (
+                          <Select.Item value={v} key={v}>
+                            {v}
+                          </Select.Item>
+                        );
+                      })}
+                    </Select.Content>
+                  </Select.Root>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 mt-4">
+                <span className="shrink-0">被电统计</span>
+                <Checkbox checked={settings.showSummary} onCheckedChange={(v) => handleChange({ showSummary: v as boolean })} />
+                <span className="text-xs text-[#ccc]">展示：已累计被电 x 次，当前连损 y 笔</span>
+              </div>
+
+              <div className="flex items-center gap-2 mt-4">
+                <span className="shrink-0">停手计时</span>
+                <Checkbox checked={settings.enableStopLossCountdown} onCheckedChange={(v) => handleChange({ enableStopLossCountdown: v as boolean })} />
+                <span className="text-xs text-[#ccc]">展示</span>
+              </div>
+
+              <div className="flex justify-end gap-3 mt-4">
+                <Button onClick={() => setTab('info')} variant="soft" color="gray">
+                  返回
+                </Button>
                 <Button onClick={handleSubmitSettings}>保存</Button>
               </div>
             </div>

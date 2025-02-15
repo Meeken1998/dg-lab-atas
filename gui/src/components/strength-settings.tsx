@@ -18,7 +18,7 @@ export const StrengthSettings: React.FC<Props> = ({ unit, value, onChange }) => 
       <TextField.Root size="1" type="number" className="w-16" value={value.trigger} onChange={(e) => handleChange({ trigger: Number(e.target.value) })} />
       <span>{unit}时，强度为</span>
       <Select.Root size="1" value={value.type} onValueChange={(v) => handleChange({ type: v as TStrength['type'] })}>
-        <Select.Trigger />
+        <Select.Trigger className="!w-20" />
         <Select.Content>
           <Select.Item value="fixed">固定值</Select.Item>
           <Select.Item value="multiple">亏损额×</Select.Item>

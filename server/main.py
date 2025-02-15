@@ -18,8 +18,6 @@ import websockets
 from settings import PUNISHMENT_SETTINGS, set_settings
 import time
 import datetime
-import http.server
-import socketserver
 
 
 def get_lan_ip():
@@ -107,7 +105,7 @@ async def handle_position_data(data):
     print(f"⚡ 当前电击强度：{strength}")
 
     # Send pulses to the client
-    await client.add_pulses(Channel.A, *(PULSE_DATA["信号灯"] * 5))
+    await client.add_pulses(Channel.A, *(PULSE_DATA[P_SETTINGS["waveform"]] * 5))
     await client.set_strength(Channel.A, StrengthOperationType.SET_TO, strength)
     if current_websocket:
         await current_websocket.send(json.dumps({
@@ -115,6 +113,8 @@ async def handle_position_data(data):
             "type": "trade",
             "data": strength,
             "punishmentCount": P_PUNISHMENT_COUNT,
+            "stopLossCount": P_STOP_LOSS_COUNT,
+            "nextTimestampAllowedToTrade": P_NEXT_TIMESTAMP_ALLOWED_TO_TRADE,
         }))
 
 
@@ -148,6 +148,7 @@ async def gui_websocket_server():
     async def handle_gui_connection(websocket):
         global current_websocket
         current_websocket = websocket
+        global P_SETTINGS
         try:
             while True:
                 message = await websocket.recv()
@@ -162,10 +163,6 @@ async def gui_websocket_server():
                     print(f"更新惩罚设置: {data.get('data')}")
                     set_settings(data.get("data"))
                     P_SETTINGS.update(data.get("data"))
-                    await websocket.send(json.dumps({
-                        "type": "settings",
-                        "data": P_SETTINGS,
-                    }))
 
         except websockets.exceptions.ConnectionClosed:
             print("网页 WebSocket 服务已断开")

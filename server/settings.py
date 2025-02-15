@@ -15,6 +15,10 @@ PUNISHMENT_SETTINGS = {
         "type": "fixed",
     },
     "stopLossRestMinutes": 5,
+    "waveform": "信号灯",
+    "pluginTitle": "风控已开启，扛单会被电！",
+    "showSummary": True,
+    "enableStopLossCountdown": True,
 }
 
 SETTINGS_FILE_PATH = ".\\settings.json"
@@ -24,12 +28,13 @@ if os.path.exists(SETTINGS_FILE_PATH):
         try:
             PUNISHMENT_SETTINGS.update(json.load(f))
         except json.JSONDecodeError:
-            print(f"Warning: {SETTINGS_FILE_PATH} contains invalid JSON, using default configuration.")
+            print(
+                f"Warning: {SETTINGS_FILE_PATH} contains invalid JSON, using default configuration.")
 
 with open(SETTINGS_FILE_PATH, "w") as f:
     json.dump(PUNISHMENT_SETTINGS, f, indent=4)
-    
+
+
 def set_settings(settings: dict):
-    PUNISHMENT_SETTINGS.update(settings)
     with open(SETTINGS_FILE_PATH, "w") as f:
-        json.dump(PUNISHMENT_SETTINGS, f, indent=4)
+        json.dump(settings, f, indent=4)
