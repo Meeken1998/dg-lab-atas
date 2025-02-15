@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/Meeken1998/atas-dg-lab-plugin/blob/master/dg-lab-atas.png" width="396" height="406" alt="sample">
+  <img src="https://github.com/Meeken1998/atas-dg-lab-plugin/blob/master/dg-lab-atas.png" width="406" height="665" alt="sample">
   <div></div>
   <div>
     <i><b>「让“亏麻了”从玩笑变成现实。」</b></i>
@@ -42,7 +42,7 @@
 2. 前往 [Release](https://github.com/Meeken1998/atas-dg-lab-plugin/releases) 下载最新版本，或拉下代码自行构建
 3. 将 `DgLabAtasIndicator.dll` 放到 `ATAS\Indicators` 目录下，通常在“文档”目录中能找到
 4. 右击任一图表 - 指标 - 搜索 `DgLabIndicator`，双击添加
-5. 启动 `DgLabAtas.exe`，如果一切正常，你会看到一个二维码
+5. 启动 `DgLabAtas.exe` 服务，如果一切正常，你会看到一个二维码
 6. 打开手机上的 DG-LAB App，进入 SOCKET 控制模式，扫码连接
 7. （可选）如需使用网页小组件，启动 `WebPage.exe`
 
@@ -60,13 +60,17 @@
 
 此外，订单流交易非常强调一致性，但订单流这门技术本身又是最容易打破一致性的，因为节奏更快，持仓时间更短，波动更大，像我这样的菜鸡交易员是很难管住手的。
 
-浮亏通常是扛单、逆向加仓、撤止损单等不良习惯导致的。浮亏的感觉很让人懊恼，会想着要是有外力能就好了。所以我开发了这个插件。
+浮亏通常是扛单、逆向加仓、撤止损单等不良习惯导致的。浮亏的感觉很让人懊恼，会想着要是有外力能阻止我就好了，遂开发了这个插件。
 
 ### 我可以如何使用这个开源项目？
 
 你可以在遵循 MIT 协议的前提下任意使用。
 
 另外，由于开发时间很短，代码难免有 bug，欢迎进行测试与贡献功能。
+
+### 启动了服务和网页小组件，但没有数据？
+
+请检查 ATAS 是否是以管理员模式启动的，由于程序需要向 `C:\trade.txt` 写入交易日志，所以需要管理员权限。
 
 ## 关于
 
