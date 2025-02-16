@@ -76,7 +76,9 @@ const App: React.FC = () => {
   };
 
   const initWebSocket = () => {
-    const ws = new WebSocket('http://localhost:5679/ws');
+    console.log('hello');
+
+    const ws = new WebSocket('http://127.0.0.1:5679/ws');
 
     ws.onopen = () => {
       console.log('WebSocket connected');
@@ -110,7 +112,7 @@ const App: React.FC = () => {
       console.error('WebSocket error, try to reconnect after 3 seconds...', error);
       // 3 秒后重试连接
       setTimeout(() => {
-        wsRef.current = new WebSocket('ws://localhost:5679');
+        wsRef.current = new WebSocket('ws://127.0.0.1:5679');
         initWebSocket();
       }, 3000);
     };
@@ -119,7 +121,11 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    initWebSocket();
+    try {
+      initWebSocket();
+    } catch (error) {
+      console.error('Error initializing WebSocket:', error);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

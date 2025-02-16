@@ -1,0 +1,8 @@
+{
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "beforeBuildCommand": "pnpm build",
+    "devUrl": "http://localhost:5680",
+    "frontendDist": "../dist/gui"
+  }
+}
