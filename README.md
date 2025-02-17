@@ -1,24 +1,51 @@
-<div align="center">
-  <div>
-    <i><b>「让“亏麻了”从玩笑变成现实。」</b></i>
-  </div>
+<h1 align="center">
+  ⚡ DG-LAB ATAS 风控插件
+</h1>
+
+<p align="center">
+  <i>「让“亏麻了”从玩笑变成现实」</i>
 </div>
 
-# ⚡ DG-LAB ATAS 风控插件
+<p align="center">
+  <a href="https://github.com/Meeken1998/dg-lab-atas/releases">
+    下载客户端
+  </a>
+  <span>&nbsp&nbsp</span>
+  <a href="https://meeken1998.github.io/dg-lab-atas">
+    网页小组件
+  </a>
+</p>
 
-[🤗 直播网页小组件](https://meeken1998.github.io/dg-lab-atas/index.html)
+> [!NOTE]
+> 🤗  [网页小组件](https://meeken1998.github.io/dg-lab-atas) 已发布！
+> 注意：网页小组件需配合软件使用，否则是连不上电击器的，详情请看 [使用方法](#使用方法)
 
-注意：网页小组件需配合软件使用，否则是连不上电击器的，详情请看 [使用方法](#使用方法)
+
+## 真实反馈
+
+> *“开到 15 之后我现在手自己在抖。”* —— Deltapex 创始人 Alex
+>
+> *“我草！”* —— Deltapex 六期学员佳俊
+> 
+> *“为了节目效果，我愿意贡献 10 度电。”* —— 某 GC 交易员
+> 
+> *“deep♂delta♂petas”* —— Deltapex 一期学员 Hermite
+> 
+> *“不是我真的来园区了？”* —— 某 GC 交易员
 
 ## 简介
 
-使用 🐺 DG-LAB 郊狼情趣电击来执行期货交易风控。
+> [!WARNING]
+> 免责声明：
+> 请认真阅读并严格执行 DG-LAB App 的安全指南，不要将配件用在胸部、头部等重要部位，否则可能造成伤害！
+> 
+> 这是一个娱乐项目，代码仅个人使用！任何使用本插件进行交易的行为均由使用者自行承担风险，作者不承担任何责任！
 
-这个项目的名字很直白，`DG-LAB` 是一个国内知名的 BDSM 玩具公司，项目主要使用他们的“郊狼 3.0 电击器”来执行风控惩罚。
+本项目使用 DG-LAB 🐺 郊狼情趣电击来执行 ATAS 期货交易风控。
+
+`DG-LAB` 是一个国内知名的 BDSM 玩具公司，项目主要使用他们的“郊狼 3.0 电击器”来执行风控惩罚。
 
 `ATAS` 是一款知名的订单流交易软件，能交易很多外盘期货品种。
-
-免责声明：任何使用本插件进行交易的行为均由使用者自行承担风险，作者不承担任何责任。
 
 ## 插件功能
 
@@ -41,20 +68,26 @@
 ## 使用方法
 
 1. 确保你有一台“郊狼 3.0 情趣电击器”，并已 [下载 App](https://www.dungeon-lab.com/app-download.php)
-2. 前往 [Release](https://github.com/Meeken1998/atas-dg-lab-plugin/releases) 下载最新版本，或拉下代码自行构建
+2. [下载最新版客户端](https://github.com/Meeken1998/dg-lab-atas/releases) ，或拉下代码自行构建
 3. 将 `DgLabAtasIndicator.dll` 放到 `ATAS\Indicators` 目录下，通常在“文档”目录中能找到
 4. 右击任一图表 - 指标 - 搜索 `DgLabIndicator`，双击添加
-5. 启动 `DgLabAtas.exe` 软件，如果一切正常，你会看到一个二维码
+5. 启动 `DgLabAtas.exe` 客户端，如果一切正常，你会看到一个二维码
 6. 打开手机上的 DG-LAB App，进入 SOCKET 控制模式，扫码连接
 7. （可选）如需在本地使用网页小组件，启动 `WebPage.exe`，推荐使用 [🤗 直播网页小组件](https://meeken1998.github.io/dg-lab-atas/index.html)
 
 ## FAQs
 
-### 我会被电死吗？
+### 我会受伤吗？
 
-不会。
+如果严格按照 DG-LAB App 的安全提示来使用配件，答案是：不会。
 
-郊狼的设计是即便强度开到上限（200），也不会导致触电。同时官方的 App 提供了非常多功能保障安全，比如强度上限，修改映射值等待。
+郊狼的本质是成人用品，原本的使用部位通常更敏感，贴在手臂或腿部完全没问题。
+
+同时他们的产品认证也是齐的，如 CE，FCC，RoHS 等，这是我选择它作为惩罚道具的原因。
+
+电流强度也是可控的。即便强度开到上限（200），也不会导致触电。同时官方的 App 提供了非常多功能保障安全，比如强度上限，修改映射值等待，推荐进行设置。
+
+当然，凡事无绝对，请务必阅读 App 的安全指南进行操作，并在感到不适时立即关闭设备与客户端程序，切记量力而行！
 
 ### 为什么需要这个插件？
 
