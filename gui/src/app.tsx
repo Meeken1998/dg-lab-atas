@@ -126,10 +126,10 @@ const App: React.FC = () => {
   return (
     <Theme appearance="dark" accentColor="yellow">
       <main className="app !flex min-h-screen w-screen justify-center bg-gradient-to-b from-[rgb(30,41,59)] to-[#111] text-sm text-[#ffe99d] select-none">
-        <div className="flex flex-col w-full p-6 max-w-96 rounded-xl">
+        <div className="flex w-full max-w-96 flex-col rounded-xl p-6">
           <div className="flex justify-between gap-6">
-            <img src="dg-lab.png" className="h-16 cursor-pointer shrink-0" draggable={false} onClick={() => setTab(tab === 'info' ? 'settings' : 'info')} />
-            <div className="flex flex-col flex-1 gap-1 py-1">
+            <img src="dg-lab.png" className="h-16 shrink-0 cursor-pointer" draggable={false} onClick={() => setTab(tab === 'info' ? 'settings' : 'info')} />
+            <div className="flex flex-1 flex-col gap-1 py-1">
               <div className="text-base font-bold">{connected ? settings.pluginTitle || DEFAULT_SETTINGS.pluginTitle : '等待连接中，请启动 DgLabAtas...'}</div>
 
               <div className="flex gap-3">
@@ -142,7 +142,7 @@ const App: React.FC = () => {
                       clip-rule="evenodd"
                     ></path>
                   </svg>
-                  <div className="flex items-center gap-2 text-3xl font-bold w-14">
+                  <div className="flex w-14 items-center gap-2 text-3xl font-bold">
                     <span>{Math.round(tradeInfo?.data ?? 0)}</span>
 
                     {animate === '+' && (
@@ -212,6 +212,7 @@ const App: React.FC = () => {
                 连损：连损 {settings.stopLoss.trigger} 笔后浮亏，电流强度={settings.stopLoss.type === 'fixed' ? settings.stopLoss.value : '亏损额×' + settings.stopLoss.value}
               </div>
               <div>停止惩罚：空仓或不再浮亏</div>
+              <div>趣味电击玩具，贴片贴在手臂，安全娱乐直播</div>
               {settings.showSummary && (
                 <div>
                   已累计被电 {tradeInfo?.punishmentCount ?? 0} 次，当前连损 {tradeInfo?.stopLossCount ?? 0} 笔{countdown ? '，强制停手' : null}
@@ -233,7 +234,7 @@ const App: React.FC = () => {
 
               <StrengthSettings unit="刀" value={settings.pnlLoss} onChange={(v) => handleChange({ pnlLoss: v })} />
 
-              <div className="flex items-center gap-2 mt-4">
+              <div className="mt-4 flex items-center gap-2">
                 <Checkbox checked={settings.stopLossEnabled} onCheckedChange={(v) => handleChange({ stopLossEnabled: v as boolean })} />
                 <div className="flex flex-wrap items-center gap-1">
                   <span>连损检测</span>
@@ -247,7 +248,7 @@ const App: React.FC = () => {
                 <span>分钟</span>
               </div>
 
-              <div className="flex flex-wrap items-center gap-1 mt-4">
+              <div className="mt-4 flex flex-wrap items-center gap-1">
                 <span>停止惩罚</span>
               </div>
 
@@ -255,12 +256,12 @@ const App: React.FC = () => {
 
               <h2 className="mt-6 mb-4 text-base font-bold text-[#ffe99d]">互动设置</h2>
 
-              <div className="flex gap-2 mt-4">
+              <div className="mt-4 flex gap-2">
                 <span className="shrink-0">插件标题</span>
                 <TextField.Root size="1" className="flex-1" value={settings.pluginTitle} onChange={(e) => handleChange({ pluginTitle: e.target.value })} placeholder={DEFAULT_SETTINGS.pluginTitle} />
               </div>
 
-              <div className="flex gap-2 mt-4">
+              <div className="mt-4 flex gap-2">
                 <span className="shrink-0">电击波形</span>
                 <div className="flex-1">
                   <Select.Root size="1" value={settings.waveform} onValueChange={(v) => handleChange({ waveform: v })}>
@@ -278,19 +279,19 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 mt-4">
+              <div className="mt-4 flex items-center gap-2">
                 <span className="shrink-0">被电统计</span>
                 <Checkbox checked={settings.showSummary} onCheckedChange={(v) => handleChange({ showSummary: v as boolean })} />
                 <span className="text-xs text-[#ccc]">展示：已累计被电 x 次，当前连损 y 笔</span>
               </div>
 
-              <div className="flex items-center gap-2 mt-4">
+              <div className="mt-4 flex items-center gap-2">
                 <span className="shrink-0">停手计时</span>
                 <Checkbox checked={settings.enableStopLossCountdown} onCheckedChange={(v) => handleChange({ enableStopLossCountdown: v as boolean })} />
                 <span className="text-xs text-[#ccc]">展示</span>
               </div>
 
-              <div className="flex justify-end gap-3 mt-4">
+              <div className="mt-4 flex justify-end gap-3">
                 <Button onClick={() => setTab('info')} variant="soft" color="gray">
                   返回
                 </Button>
