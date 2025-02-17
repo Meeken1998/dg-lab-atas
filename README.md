@@ -1,15 +1,15 @@
-<div align="center">
-  <div>
-    <i><b>「让“亏麻了”从玩笑变成现实。」</b></i>
-  </div>
+<h1 align="center">
+  ⚡ DG-LAB ATAS 风控插件
+</h1>
+
+<p align="center">
+  <i>「让“亏麻了”从玩笑变成现实」</i>
 </div>
 
+> [!NOTE]
+> 🤗  [直播网页小组件](https://meeken1998.github.io/dg-lab-atas) 已发布！
+> 注意：网页小组件需配合软件使用，否则是连不上电击器的，详情请看 [使用方法](#使用方法)
 
-# ⚡ DG-LAB ATAS 风控插件
-
-[🤗 直播网页小组件](https://meeken1998.github.io/dg-lab-atas)
-
-注意：网页小组件需配合软件使用，否则是连不上电击器的，详情请看 [使用方法](#使用方法)
 
 ## 真实反馈
 
@@ -57,7 +57,7 @@
 2. 前往 [Release](https://github.com/Meeken1998/atas-dg-lab-plugin/releases) 下载最新版本，或拉下代码自行构建
 3. 将 `DgLabAtasIndicator.dll` 放到 `ATAS\Indicators` 目录下，通常在“文档”目录中能找到
 4. 右击任一图表 - 指标 - 搜索 `DgLabIndicator`，双击添加
-5. 启动 `DgLabAtas.exe` 软件，如果一切正常，你会看到一个二维码
+5. 启动 `DgLabAtas.exe` 客户端，如果一切正常，你会看到一个二维码
 6. 打开手机上的 DG-LAB App，进入 SOCKET 控制模式，扫码连接
 7. （可选）如需在本地使用网页小组件，启动 `WebPage.exe`，推荐使用 [🤗 直播网页小组件](https://meeken1998.github.io/dg-lab-atas/index.html)
 
