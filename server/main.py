@@ -88,7 +88,7 @@ async def handle_position_data(data):
             "type"] == "fixed" else P_SETTINGS["stopLoss"]["value"] * abs(pnl)
         print(
             f"🔒 触发连损风控，已连损 {P_STOP_LOSS_COUNT} 次，解除时间：{datetime.datetime.fromtimestamp(P_NEXT_TIMESTAMP_ALLOWED_TO_TRADE)}")
-    elif P_SETTINGS["pnlLossEnabled"] == True and pnl < P_SETTINGS["pnlLoss"]["value"] * -1:
+    elif P_SETTINGS["pnlLossEnabled"] == True and pnl < P_SETTINGS["pnlLoss"]["trigger"] * -1:
         strength += P_SETTINGS["pnlLoss"]["value"] if P_SETTINGS["pnlLoss"][
             "type"] == "fixed" else P_SETTINGS["pnlLoss"]["value"] * abs(pnl)
         print(f"😡 触发扛单风控，已连损 {P_STOP_LOSS_COUNT} 次，当前 PnL：{pnl}")
@@ -197,7 +197,6 @@ async def main():
             # Handle strength data updates
             if isinstance(data, StrengthData):
                 print(f"App 强度信息: {data}")
-                last_strength = data
 
             # Handle disconnection or heartbeat
             elif data == RetCode.CLIENT_DISCONNECTED:
