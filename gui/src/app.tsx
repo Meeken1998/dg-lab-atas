@@ -214,7 +214,7 @@ const App: React.FC = () => {
                 <span className="text-[#ffe99d]">{settings.stopLoss.type === 'fixed' ? settings.stopLoss.value : '亏损额×' + settings.stopLoss.value}</span>
               </div>
               <div>停止惩罚：空仓或不再浮亏</div>
-              <div>趣味脉冲玩具，贴片贴在手臂，安全娱乐直播</div>
+              <div>电脉冲道具，贴片贴在手臂，安全娱乐直播</div>
               {settings.showSummary && (
                 <div>
                   已累计被电 <span className="text-[#ffe99d]">{tradeInfo?.punishmentCount ?? 0}</span> 次，当前连损 <span className="text-[#ffe99d]">{tradeInfo?.stopLossCount ?? 0}</span> 笔
