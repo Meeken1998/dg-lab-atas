@@ -6,8 +6,18 @@
   <i>「让“亏麻了”从玩笑变成现实」</i>
 </div>
 
+<p align="center">
+  <a href="https://github.com/Meeken1998/dg-lab-atas/releases">
+    下载客户端
+  </a>
+  <span>&nbsp&nbsp</span>
+  <a href="https://meeken1998.github.io/dg-lab-atas">
+    网页小组件
+  </a>
+</p>
+
 > [!NOTE]
-> 🤗  [直播网页小组件](https://meeken1998.github.io/dg-lab-atas) 已发布！
+> 🤗  [网页小组件](https://meeken1998.github.io/dg-lab-atas) 已发布！
 > 注意：网页小组件需配合软件使用，否则是连不上电击器的，详情请看 [使用方法](#使用方法)
 
 
@@ -54,7 +64,7 @@
 ## 使用方法
 
 1. 确保你有一台“郊狼 3.0 情趣电击器”，并已 [下载 App](https://www.dungeon-lab.com/app-download.php)
-2. [下载最新版客户端](https://github.com/Meeken1998/atas-dg-lab-plugin/releases) ，或拉下代码自行构建
+2. [下载最新版客户端](https://github.com/Meeken1998/dg-lab-atas/releases) ，或拉下代码自行构建
 3. 将 `DgLabAtasIndicator.dll` 放到 `ATAS\Indicators` 目录下，通常在“文档”目录中能找到
 4. 右击任一图表 - 指标 - 搜索 `DgLabIndicator`，双击添加
 5. 启动 `DgLabAtas.exe` 客户端，如果一切正常，你会看到一个二维码
