@@ -18,7 +18,7 @@ const DEFAULT_SETTINGS: TSettings = {
   },
   stopLossRestMinutes: 5,
   waveform: '信号灯',
-  pluginTitle: '风控已开启，扛单会被电！',
+  pluginTitle: '风控启动，扛单要小心！',
   showSummary: true,
   enableStopLossCountdown: true,
 };
