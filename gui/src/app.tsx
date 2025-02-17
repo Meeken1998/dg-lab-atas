@@ -193,7 +193,7 @@ const App: React.FC = () => {
                           clip-rule="evenodd"
                         ></path>
                       </svg>
-                      <div className="text-5xl font-bold">{Math.floor(tradeInfo?.punishmentCount ?? 0)} 次</div>
+                      <div className="flex items-center gap-2 text-5xl font-bold">{Math.floor(tradeInfo?.punishmentCount ?? 0)} <span className="text-4xl font-blold">次</span></div>
                     </>
                   )}
                 </div>
@@ -204,18 +204,21 @@ const App: React.FC = () => {
           <div className="my-4 h-[1px] w-full bg-[#333]"></div>
 
           {tab === 'info' && (
-            <div className="flex-1 text-xl font-bold leading-10">
+            <div className="flex-1 text-xl font-bold leading-10 text-white">
               <div>
-                扛单：亏损超 {settings.pnlLoss.trigger} 刀时，强度={settings.pnlLoss.type === 'fixed' ? settings.pnlLoss.value : '亏损额×' + settings.pnlLoss.value}
+                扛单：亏损超 <span className="text-[#ffe99d]">{settings.pnlLoss.trigger}</span> 刀时，强度=
+                <span className="text-[#ffe99d]">{settings.pnlLoss.type === 'fixed' ? settings.pnlLoss.value : '亏损额×' + settings.pnlLoss.value}</span>
               </div>
               <div>
-                连损：连损 {settings.stopLoss.trigger} 笔后浮亏，强度={settings.stopLoss.type === 'fixed' ? settings.stopLoss.value : '亏损额×' + settings.stopLoss.value}
+                连损：连损 <span className="text-[#ffe99d]">{settings.stopLoss.trigger}</span> 笔后浮亏，强度=
+                <span className="text-[#ffe99d]">{settings.stopLoss.type === 'fixed' ? settings.stopLoss.value : '亏损额×' + settings.stopLoss.value}</span>
               </div>
               <div>停止惩罚：空仓或不再浮亏</div>
               <div>趣味脉冲玩具，贴片贴在手臂，安全娱乐直播</div>
               {settings.showSummary && (
                 <div>
-                  已累计被电 {tradeInfo?.punishmentCount ?? 0} 次，当前连损 {tradeInfo?.stopLossCount ?? 0} 笔{countdown ? '，强制停手' : null}
+                  已累计被电 <span className="text-[#ffe99d]">{tradeInfo?.punishmentCount ?? 0}</span> 次，当前连损 <span className="text-[#ffe99d]">{tradeInfo?.stopLossCount ?? 0}</span> 笔
+                  {countdown ? '，强制停手' : null}
                 </div>
               )}
             </div>
