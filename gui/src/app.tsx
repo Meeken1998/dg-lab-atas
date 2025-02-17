@@ -130,7 +130,7 @@ const App: React.FC = () => {
           <div className="flex justify-between gap-6">
             <img src="dg-lab.png" className="h-16 cursor-pointer shrink-0" draggable={false} onClick={() => setTab(tab === 'info' ? 'settings' : 'info')} />
             <div className="flex flex-col flex-1 gap-1 py-1">
-              <div className="text-base font-bold">{connected ? settings.pluginTitle || DEFAULT_SETTINGS.pluginTitle : '等待连接中...'}</div>
+              <div className="text-base font-bold">{connected ? settings.pluginTitle || DEFAULT_SETTINGS.pluginTitle : '等待连接中，请启动 DgLabAtas...'}</div>
 
               <div className="flex gap-3">
                 <div className="flex items-center gap-1">
