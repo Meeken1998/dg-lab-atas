@@ -51,8 +51,6 @@ This project uses the DG-LAB 🐺 Coyote E-Stim Powerbox 3.0 to implement risk c
 
 **ATAS** is a renowned order flow trading software that supports trading various futures contracts from international markets.
 
----
-
 ## Plugin Features
 
 ### 😡 Position Holding Risk Control
@@ -71,8 +69,6 @@ Allows setting a fixed value or dynamically calculating intensity based on float
 
 Provides a web widget that can be embedded in OBS to create an explosive streaming experience.
 
----
-
 ## Usage Instructions
 
 1. Ensure you have a **Coyote 3.0 Erotic Shock Device** and have [downloaded the DG-LAB App](https://www.dungeon-lab.com/app-download.php).
@@ -82,8 +78,6 @@ Provides a web widget that can be embedded in OBS to create an explosive streami
 5. Launch `DgLabAtas.exe` client; you should see a QR code if everything is working correctly.
 6. Open the DG-LAB App on your phone, enter **SOCKET Control Mode**, and scan the code to connect.
 7. (Optional) To use the web widget locally, start `WebPage.exe`. For streaming, it’s recommended to use the [🤗 Live Web Widget](https://meeken1998.github.io/dg-lab-atas/index.html).
-
----
 
 ## ❓ Troubleshooting
 
@@ -115,8 +109,6 @@ If it still doesn’t appear, downgrade ATAS to a stable version.
 Check if ATAS is launched with **administrator privileges**.  
 Since the program needs to write trading logs to `C:\trade.txt`, it requires admin rights.
 
----
-
 ## FAQs
 
 ### Will I Get Hurt?
@@ -130,8 +122,6 @@ The official app provides numerous safety features, such as intensity limits and
 
 Nonetheless, always proceed cautiously and immediately stop using the device and client software if you feel uncomfortable.
 
----
-
 ### Why Do You Need This Plugin?
 
 To achieve consistent profitability in futures trading, both **technical skills and mindset** are equally important. Even seasoned traders have blown up their accounts.
@@ -140,14 +130,10 @@ Order flow trading requires strong consistency, but the fast pace, short holding
 
 Floating losses are often caused by bad habits such as holding losing positions, averaging down, or canceling stop-loss orders. The discomfort of floating losses often leads to regret, and I wished for something to prevent reckless actions—thus, this plugin was born.
 
----
-
 ### How Can I Use This Open-Source Project?
 
 You are free to use it under the MIT License.  
 Since the development time was short, there might be bugs—feel free to test and contribute!
-
----
 
 ## About
 
