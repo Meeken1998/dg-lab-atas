@@ -22,7 +22,8 @@
 
 
 > [!NOTE]
-> 🤗 The [Web Widget](https://meeken1998.github.io/dg-lab-atas) is now available!  
+> 🤗 The [Web Widget](https://meeken1998.github.io/dg-lab-atas) is now available!
+> 
 > Attention: The web widget must be used together with the software; otherwise, it won't connect to the shock device. For details, please see the [Usage Instructions](#usage-instructions).
 
 
@@ -137,5 +138,6 @@ Since the development time was short, there might be bugs—feel free to test an
 
 ## About
 
-**Author:** [CatIsKindOfBig@Bilibili](https://space.bilibili.com/39903717)  
+**Author:** [猫有点大@Bilibili](https://space.bilibili.com/39903717) 
+
 **Special Thanks:** [PyDGLab-WS](https://github.com/Ljzd-PRO/PyDGLab-WS)
