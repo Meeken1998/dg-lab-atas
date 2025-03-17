@@ -1,5 +1,5 @@
 <h1 align="center">
-  ⚡ DG-LAB ATAS Risk Control Plugin
+  ⚡ DG-LAB ATAS Trading Risk Control Plugin
 </h1>
 
 <p align="center">
@@ -24,7 +24,7 @@
 > [!NOTE]
 > 🤗 The [Web Widget](https://meeken1998.github.io/dg-lab-atas) is now available!
 > 
-> Attention: The web widget must be used together with the software; otherwise, it won't connect to the shock device. For details, please see the [Usage Instructions](#usage-instructions).
+> Attention: The web widget must be used together with the software; otherwise, it won't connect to the E-Stim device. For details, please see the [Usage Instructions](#usage-instructions).
 
 
 ## Real Feedback
