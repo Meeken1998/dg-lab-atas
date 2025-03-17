@@ -1,5 +1,3 @@
-<i>“Turning 'I'm screwed' from a joke into reality.”</i>
-
 <h1 align="center">
   ⚡ DG-LAB ATAS Risk Control Plugin
 </h1>
@@ -22,13 +20,11 @@
   </a>
 </p>
 
----
 
-> 💡 **Note:**  
+> [!NOTE]
 > 🤗 The [Web Widget](https://meeken1998.github.io/dg-lab-atas) is now available!  
-> **Attention:** The web widget must be used together with the software; otherwise, it won't connect to the shock device. For details, please see the [Usage Instructions](#usage-instructions).
+> Attention: The web widget must be used together with the software; otherwise, it won't connect to the shock device. For details, please see the [Usage Instructions](#usage-instructions).
 
----
 
 ## Real Feedback
 
@@ -42,18 +38,16 @@
 >
 > _"Am I really going to the industrial park?"_ — A GC Trader
 
----
-
 ## Introduction
 
-> ⚠️ **Disclaimer:**  
+> [!WARNING]
 > Please carefully read and strictly follow the DG-LAB App safety guidelines. Do not use the accessories on critical areas such as the chest or head to avoid injury!
 >
 > This project is purely for entertainment and is intended for personal use only! Any trading behavior conducted with this plugin is solely at the user's own risk, and the author assumes no responsibility!
 
-This project uses the DG-LAB 🐺 Coyote Erotic Shock Device to implement risk control in ATAS futures trading.
+This project uses the DG-LAB 🐺 Coyote E-Stim Powerbox 3.0 to implement risk control in ATAS futures trading.
 
-**DG-LAB** is a well-known Chinese BDSM toy manufacturer, and the project primarily uses their "Coyote 3.0 Shock Device" for risk control and punishment.
+**DG-LAB** is a well-known Chinese BDSM toy manufacturer, and the project primarily uses their "Coyote 3.0 Device" for risk control and punishment.
 
 **ATAS** is a renowned order flow trading software that supports trading various futures contracts from international markets.
 
@@ -105,7 +99,7 @@ From version v0.0.4 onwards, you can also find the `qrcode.png` file in the prog
 Ensure that your phone and PC are on the same local network and that the App is using **SOCKET Control Mode** instead of **Remote Control Mode**.  
 Sometimes using a mobile hotspot can cause issues—using a stable Wi-Fi network is recommended.
 
-### DgLabAtasIndicator.dll Related Issues
+### `DgLabAtasIndicator.dll` Related Issues
 
 #### 1. Where is the `ATAS\Indicators` Directory?
 
