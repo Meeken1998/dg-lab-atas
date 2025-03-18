@@ -1,114 +1,143 @@
 <h1 align="center">
-  ⚡ DG-LAB ATAS 风控插件
+  ⚡ DG-LAB ATAS Trading Risk Control Plugin
 </h1>
 
 <p align="center">
-  <i>「让“亏麻了”从玩笑变成现实」</i>
+  <i>“Turning 'I'm screwed' from a joke into reality.”</i>
 </div>
 
 <p align="center">
   <a href="https://github.com/Meeken1998/dg-lab-atas/releases">
-    下载客户端
+    Download Client
   </a>
   <span>&nbsp&nbsp</span>
   <a href="https://meeken1998.github.io/dg-lab-atas">
-    网页小组件
+    Web Widget
+  </a>
+  <span>&nbsp&nbsp</span>
+  <a href="/README_CN.md">
+    中文文档
   </a>
 </p>
 
+
 > [!NOTE]
-> 🤗  [网页小组件](https://meeken1998.github.io/dg-lab-atas) 已发布！
-> 注意：网页小组件需配合软件使用，否则是连不上电击器的，详情请看 [使用方法](#使用方法)
+> 🤗 The [Web Widget](https://meeken1998.github.io/dg-lab-atas) is now available!
+> 
+> Attention: The web widget must be used together with the software; otherwise, it won't connect to the E-Stim device. For details, please see the [Usage Instructions](#usage-instructions).
 
 
-## 真实反馈
+## Real Feedback
 
-> *“开到 15 之后我现在手自己在抖。”* —— Deltapex 创始人 Alex
+> _"After setting it to 15, my hands started shaking on their own."_ — Alex, Founder of Deltapex
 >
-> *“我草！”* —— Deltapex 六期学员佳俊
-> 
-> *“为了节目效果，我愿意贡献 10 度电。”* —— 某 GC 交易员
-> 
-> *“deep♂delta♂petas”* —— Deltapex 一期学员 Hermite
-> 
-> *“不是我真的来园区了？”* —— 某 GC 交易员
+> _"Damn!"_ — Jiajun, Deltapex Batch 6
+>
+> _"For the sake of the show, I’m willing to give it 10 volts."_ — A GC Trader
+>
+> _"deep♂delta♂petas"_ — Hermite, Deltapex Batch 1
+>
+> _"Am I really going to the industrial park?"_ — A GC Trader
 
-## 简介
+## Introduction
 
 > [!WARNING]
-> 免责声明：
-> 请认真阅读并严格执行 DG-LAB App 的安全指南，不要将配件用在胸部、头部等重要部位，否则可能造成伤害！
-> 
-> 这是一个娱乐项目，代码仅个人使用！任何使用本插件进行交易的行为均由使用者自行承担风险，作者不承担任何责任！
+> Please carefully read and strictly follow the DG-LAB App safety guidelines. Do not use the accessories on critical areas such as the chest or head to avoid injury!
+>
+> This project is purely for entertainment and is intended for personal use only! Any trading behavior conducted with this plugin is solely at the user's own risk, and the author assumes no responsibility!
 
-本项目使用 DG-LAB 🐺 郊狼情趣电击来执行 ATAS 期货交易风控。
+This project uses the DG-LAB 🐺 Coyote E-Stim Powerbox 3.0 to implement risk control in ATAS futures trading.
 
-`DG-LAB` 是一个国内知名的 BDSM 玩具公司，项目主要使用他们的“郊狼 3.0 电击器”来执行风控惩罚。
+**DG-LAB** is a well-known Chinese BDSM toy manufacturer, and the project primarily uses their "Coyote 3.0 Device" for risk control and punishment.
 
-`ATAS` 是一款知名的订单流交易软件，能交易很多外盘期货品种。
+**ATAS** is a renowned order flow trading software that supports trading various futures contracts from international markets.
 
-## 插件功能
+## Plugin Features
 
-### 😡 扛单风控
+### 😡 Position Holding Risk Control
 
-订单动态浮亏时，放电进行风控，令交易员在扛单时不“心疼”也会“肉疼”。
+When there is a dynamic floating loss on an order, the device delivers a shock to ensure that the trader feels "pain" even if they don't feel "regret" when holding a position.
 
-### 🔒 连损风控
+### 🔒 Consecutive Loss Risk Control
 
-订单连续止损时，放电进行风控，并支持设置强制休息时间。
+The device delivers a shock after consecutive stop losses and supports setting a mandatory rest period.
 
-### ⚡ 灵活设置电流强度
+### ⚡ Flexible Shock Intensity
 
-既可设置固定值，也支持通过浮亏金额动态计算。
+Allows setting a fixed value or dynamically calculating intensity based on floating loss.
 
-### 🎥 直播友好
+### 🎥 Streamer Friendly
 
-提供网页小组件，可内嵌到 OBS 中，保证直播间节目效果爆炸。
+Provides a web widget that can be embedded in OBS to create an explosive streaming experience.
 
-## 使用方法
+## Usage Instructions
 
-1. 确保你有一台“郊狼 3.0 情趣电击器”，并已 [下载 App](https://www.dungeon-lab.com/app-download.php)
-2. [下载最新版客户端](https://github.com/Meeken1998/dg-lab-atas/releases) ，或拉下代码自行构建
-3. 将 `DgLabAtasIndicator.dll` 放到 `ATAS\Indicators` 目录下，通常在“文档”目录中能找到
-4. 右击任一图表 - 指标 - 搜索 `DgLabIndicator`，双击添加
-5. 启动 `DgLabAtas.exe` 客户端，如果一切正常，你会看到一个二维码
-6. 打开手机上的 DG-LAB App，进入 SOCKET 控制模式，扫码连接
-7. （可选）如需在本地使用网页小组件，启动 `WebPage.exe`，推荐使用 [🤗 直播网页小组件](https://meeken1998.github.io/dg-lab-atas/index.html)
+1. Ensure you have a **Coyote 3.0 Erotic Shock Device** and have [downloaded the DG-LAB App](https://www.dungeon-lab.com/app-download.php).
+2. [Download the latest client](https://github.com/Meeken1998/dg-lab-atas/releases) or build from source.
+3. Place `DgLabAtasIndicator.dll` in the `ATAS\Indicators` directory, typically found in your "Documents" folder.
+4. Right-click any chart → Indicators → Search for `DgLabIndicator` → Double-click to add.
+5. Launch `DgLabAtas.exe` client; you should see a QR code if everything is working correctly.
+6. Open the DG-LAB App on your phone, enter **SOCKET Control Mode**, and scan the code to connect.
+7. (Optional) To use the web widget locally, start `WebPage.exe`. For streaming, it’s recommended to use the [🤗 Live Web Widget](https://meeken1998.github.io/dg-lab-atas/index.html).
+
+## ❓ Troubleshooting
+
+### QR Code Scanning Issues
+
+#### 1. QR Code Garbled?
+
+Try changing the console font: Right-click the title bar → Properties → Change the font.  
+From version v0.0.4 onwards, you can also find the `qrcode.png` file in the program directory and open it to scan.
+
+#### 2. App Can't Scan the Code?
+
+Ensure that your phone and PC are on the same local network and that the App is using **SOCKET Control Mode** instead of **Remote Control Mode**.  
+Sometimes using a mobile hotspot can cause issues—using a stable Wi-Fi network is recommended.
+
+### `DgLabAtasIndicator.dll` Related Issues
+
+#### 1. Where is the `ATAS\Indicators` Directory?
+
+It’s located in the **Documents** folder, not in the ATAS installation directory.
+
+#### 2. Can't Find the Indicator?
+
+After placing the file, restart the ATAS software. You should be able to search for the indicator in the chart.  
+If it still doesn’t appear, downgrade ATAS to a stable version.
+
+#### 3. No Data After Loading the Indicator?
+
+Check if ATAS is launched with **administrator privileges**.  
+Since the program needs to write trading logs to `C:\trade.txt`, it requires admin rights.
 
 ## FAQs
 
-### 我会受伤吗？
+### Will I Get Hurt?
 
-如果严格按照 DG-LAB App 的安全提示来使用配件，答案是：不会。
+If you follow the DG-LAB App’s safety instructions, you shouldn't get hurt.  
+The Coyote device is designed as an adult toy, typically used on more sensitive areas, so using it on your arm or leg is completely safe.
 
-郊狼的本质是成人用品，原本的使用部位通常更敏感，贴在手臂或腿部完全没问题。
+Their products are certified (CE, FCC, RoHS), which is why it’s chosen as a punishment tool.  
+The current intensity is adjustable—even at maximum (200), it won’t cause electric shock injuries.  
+The official app provides numerous safety features, such as intensity limits and delay settings, which should be properly configured.
 
-同时他们的产品认证也是齐的，如 CE，FCC，RoHS 等，这是我选择它作为惩罚道具的原因。
+Nonetheless, always proceed cautiously and immediately stop using the device and client software if you feel uncomfortable.
 
-电流强度也是可控的。即便强度开到上限（200），也不会导致触电。同时官方的 App 提供了非常多功能保障安全，比如强度上限，修改映射值等待，推荐进行设置。
+### Why Do You Need This Plugin?
 
-当然，凡事无绝对，请务必阅读 App 的安全指南进行操作，并在感到不适时立即关闭设备与客户端程序，切记量力而行！
+To achieve consistent profitability in futures trading, both **technical skills and mindset** are equally important. Even seasoned traders have blown up their accounts.
 
-### 为什么需要这个插件？
+Order flow trading requires strong consistency, but the fast pace, short holding periods, and high volatility make it easy to lose that consistency, especially for less disciplined traders like me.
 
-因为个人感觉，期货交易要想稳定盈利，技术与心态一半一半，空有技术，心态不行也会导致亏损。几乎所有老交易员都爆过仓。
+Floating losses are often caused by bad habits such as holding losing positions, averaging down, or canceling stop-loss orders. The discomfort of floating losses often leads to regret, and I wished for something to prevent reckless actions—thus, this plugin was born.
 
-此外，订单流交易非常强调一致性，但订单流这门技术本身又是最容易打破一致性的，因为节奏更快，持仓时间更短，波动更大，像我这样的菜鸡交易员是很难管住手的。
+### How Can I Use This Open-Source Project?
 
-浮亏通常是扛单、逆向加仓、撤止损单等不良习惯导致的。浮亏的感觉很让人懊恼，会想着要是有外力能阻止我就好了，遂开发了这个插件。
+You are free to use it under the MIT License.  
+Since the development time was short, there might be bugs—feel free to test and contribute!
 
-### 我可以如何使用这个开源项目？
+## About
 
-你可以在遵循 MIT 协议的前提下任意使用。
+**Author:** [猫有点大@Bilibili](https://space.bilibili.com/39903717) 
 
-另外，由于开发时间很短，代码难免有 bug，欢迎进行测试与贡献功能。
-
-### 启动了服务和网页小组件，但没有数据？
-
-请检查 ATAS 是否是以管理员模式启动的，由于程序需要向 `C:\trade.txt` 写入交易日志，所以需要管理员权限。
-
-## 关于
-
-作者：[猫有点大@bilibili](https://space.bilibili.com/39903717)
-
-致谢：[PyDGLab-WS](https://github.com/Ljzd-PRO/PyDGLab-WS)，极大地降低了开发成本，比官网的示例好用多了（
+**Special Thanks:** [PyDGLab-WS](https://github.com/Ljzd-PRO/PyDGLab-WS)

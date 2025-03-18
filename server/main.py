@@ -46,13 +46,16 @@ print(f"Server 配置：{CONFIG}")
 print(f"当前惩罚设置: {P_SETTINGS}")
 
 
-def print_qrcode(data: str):
+def gen_qrcode(data: str):
     # Generate and print the QR code in ASCII format
     qr = qrcode.QRCode()
     qr.add_data(data)
     f = io.StringIO()
     qr.print_ascii(out=f)
     f.seek(0)
+    # 将二维码写到根目录 qrcode.png
+    with open("qrcode.png", "wb") as f:
+        qr.make_image(fill_color="black", back_color="white").save(f)
     print(f.read())
 
 
@@ -75,22 +78,37 @@ async def handle_position_data(data):
             P_STOP_LOSS_COUNT = 0
 
     if P_STOP_LOSS_COUNT == P_SETTINGS["stopLoss"]["trigger"]:
-        P_NEXT_TIMESTAMP_ALLOWED_TO_TRADE = time.time(
-        ) + P_SETTINGS["stopLossRestMinutes"] * 60
+        P_NEXT_TIMESTAMP_ALLOWED_TO_TRADE = (
+            time.time() + P_SETTINGS["stopLossRestMinutes"] * 60
+        )
 
     P_LATEST_PNL = pnl
 
     # Apply strength based on PNL
     strength = 0
 
-    if P_SETTINGS["stopLossEnabled"] == True and P_NEXT_TIMESTAMP_ALLOWED_TO_TRADE > time.time() and pnl < 0:
-        strength += P_SETTINGS["stopLoss"]["value"] if P_SETTINGS["stopLoss"][
-            "type"] == "fixed" else P_SETTINGS["stopLoss"]["value"] * abs(pnl)
+    if (
+        P_SETTINGS["stopLossEnabled"] == True
+        and P_NEXT_TIMESTAMP_ALLOWED_TO_TRADE > time.time()
+        and pnl < 0
+    ):
+        strength += (
+            P_SETTINGS["stopLoss"]["value"]
+            if P_SETTINGS["stopLoss"]["type"] == "fixed"
+            else P_SETTINGS["stopLoss"]["value"] * abs(pnl)
+        )
         print(
-            f"🔒 触发连损风控，已连损 {P_STOP_LOSS_COUNT} 次，解除时间：{datetime.datetime.fromtimestamp(P_NEXT_TIMESTAMP_ALLOWED_TO_TRADE)}")
-    elif P_SETTINGS["pnlLossEnabled"] == True and pnl < P_SETTINGS["pnlLoss"]["trigger"] * -1:
-        strength += P_SETTINGS["pnlLoss"]["value"] if P_SETTINGS["pnlLoss"][
-            "type"] == "fixed" else P_SETTINGS["pnlLoss"]["value"] * abs(pnl)
+            f"🔒 触发连损风控，已连损 {P_STOP_LOSS_COUNT} 次，解除时间：{datetime.datetime.fromtimestamp(P_NEXT_TIMESTAMP_ALLOWED_TO_TRADE)}"
+        )
+    elif (
+        P_SETTINGS["pnlLossEnabled"] == True
+        and pnl < P_SETTINGS["pnlLoss"]["trigger"] * -1
+    ):
+        strength += (
+            P_SETTINGS["pnlLoss"]["value"]
+            if P_SETTINGS["pnlLoss"]["type"] == "fixed"
+            else P_SETTINGS["pnlLoss"]["value"] * abs(pnl)
+        )
         print(f"😡 触发扛单风控，已连损 {P_STOP_LOSS_COUNT} 次，当前 PnL：{pnl}")
 
     strength = round(strength)
@@ -108,14 +126,18 @@ async def handle_position_data(data):
     await client.add_pulses(Channel.A, *(PULSE_DATA[P_SETTINGS["waveform"]] * 5))
     await client.set_strength(Channel.A, StrengthOperationType.SET_TO, strength)
     if current_websocket:
-        await current_websocket.send(json.dumps({
-            **data,
-            "type": "trade",
-            "data": strength,
-            "punishmentCount": P_PUNISHMENT_COUNT,
-            "stopLossCount": P_STOP_LOSS_COUNT,
-            "nextTimestampAllowedToTrade": P_NEXT_TIMESTAMP_ALLOWED_TO_TRADE,
-        }))
+        await current_websocket.send(
+            json.dumps(
+                {
+                    **data,
+                    "type": "trade",
+                    "data": strength,
+                    "punishmentCount": P_PUNISHMENT_COUNT,
+                    "stopLossCount": P_STOP_LOSS_COUNT,
+                    "nextTimestampAllowedToTrade": P_NEXT_TIMESTAMP_ALLOWED_TO_TRADE,
+                }
+            )
+        )
 
 
 async def monitor_trading_log(file_path):
@@ -155,10 +177,14 @@ async def gui_websocket_server():
                 data = json.loads(message)
                 if data.get("type") == "get_settings":
                     print(f"当前惩罚设置: {P_SETTINGS}")
-                    await websocket.send(json.dumps({
-                        "type": "settings",
-                        "data": P_SETTINGS,
-                    }))
+                    await websocket.send(
+                        json.dumps(
+                            {
+                                "type": "settings",
+                                "data": P_SETTINGS,
+                            }
+                        )
+                    )
                 if data.get("type") == "set_settings":
                     print(f"更新惩罚设置: {data.get('data')}")
                     set_settings(data.get("data"))
@@ -186,7 +212,7 @@ async def main():
         # Print QR code for app connection
         url = client.get_qrcode(CONFIG["WS_URL"])
         print("请扫描二维码连接到 DG-LAB App")
-        print_qrcode(url)
+        gen_qrcode(url)
 
         # Wait for binding
         await client.bind()
@@ -200,9 +226,7 @@ async def main():
 
             # Handle disconnection or heartbeat
             elif data == RetCode.CLIENT_DISCONNECTED:
-                print(
-                    "App 断连，请重启软件"
-                )
+                print("App 断连，请重启软件")
                 client.add_pulses()
                 await client.rebind()
                 print("重新绑定成功")
