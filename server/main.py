@@ -52,10 +52,11 @@ def gen_qrcode(data: str):
     qr.add_data(data)
     f = io.StringIO()
     qr.print_ascii(out=f)
+    with open("qrcode.png", "wb") as fs:
+        qr.make_image(fill_color="black", back_color="white").save(fs)
     f.seek(0)
     # 将二维码写到根目录 qrcode.png
-    with open("qrcode.png", "wb") as f:
-        qr.make_image(fill_color="black", back_color="white").save(f)
+
     print(f.read())
 
 
